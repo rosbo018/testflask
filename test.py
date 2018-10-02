@@ -30,6 +30,8 @@ def fail():
 @app.route('/session')
 def retSession():
     return str(session.items())
+
+
 @app.route('/clrsess')
 def clearSession():
     session.clear()
@@ -78,9 +80,10 @@ def fa(name, phone_number):
     print("code = " + code)
     return True
 
+
 @app.route('/return')
 def ret():
-    return "password: " + session['passwd'] +'strings: ' + secureString1 + " : " + secureString2
+    return "password: " + session['passwd'] + " , strings: " + secureString1 + " : " + secureString2
 
 
 class registerForm(Form):
