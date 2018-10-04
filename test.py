@@ -1,24 +1,35 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from wtforms import Form, StringField, validators
 from secrets import SystemRandom
+from authy.api import AuthyApiClient
+
+
+
 rand = SystemRandom()
+def generateCode(length):
+    code = [chr(rand.randrange(65, 90)) for i in range(length)]
+    code = "".join(code)
+    return code
+
+
 app = Flask(__name__)
-app.secret_key = "asd"
+app.secret_key = generateCode(5)
 
 secureString1 = "test1"
 secureString2 = "test2"
 
 tempdb = {"Alice": "12345"}
 phIdLst = []
+print("start")
 
 
-def test(a, b):
-    return a + b
+def getAuthyClient():
+    return AuthyApiClient("ACa6afa063a01266953d8031f0cea5c1a5")
 
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return redirect(url_for('registerRoute'))
 
 
 @app.route('/fail')
@@ -58,7 +69,7 @@ def login():
         return redirect(url_for('fail'))
 
     if request.method == 'POST':
-        print("pid = " + session['pid'])
+        print("pid = " + session['phone_id'])
         phone_id = request.form['pid']
         password = request.form['pwd']
         print(phone_id, password)
@@ -74,9 +85,11 @@ def login():
 
 
 def fa(name, phone_number):
-    code = [chr(rand.randrange(65, 90)) for i in range(4)]
-    code = "".join(code)
+    code = generateCode(4)
     session['phone_id'] = code
+    msg = "\n " + code
+
+
     print("code = " + code)
     return True
 
